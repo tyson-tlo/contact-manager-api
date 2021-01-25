@@ -13,19 +13,11 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $contacts = Contact::where('user_id', $request->user()->id)->paginate(20);
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-
+        return response()->json(['results' => $contacts]);
     }
 
     /**
@@ -52,18 +44,9 @@ class ContactController extends Controller
      */
     public function show(Contact $contact)
     {
-        //
-    }
+        $contact->load('company');
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return response()->json(['contact' => $contact]);
     }
 
     /**
@@ -73,9 +56,11 @@ class ContactController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Contact $contact)
     {
-        //
+        $contact->update($request->only('name'));
+
+        return response()->json(['contact' => $contact]);
     }
 
     /**
@@ -84,8 +69,10 @@ class ContactController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Contact $contact)
     {
-        //
+        $contact->delete();
+
+        return response()->json(['message' => 'Contact Deleted!']);
     }
 }
