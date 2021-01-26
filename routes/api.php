@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\Tags\TagController;
 use App\Http\Controllers\API\RegistrationController;
+use App\Http\Controllers\API\Tags\TagCompanyController;
+use App\Http\Controllers\API\Tags\TagContactController;
 use App\Http\Controllers\API\Contacts\ContactController;
 use App\Http\Controllers\API\Companies\CompanyController;
 use App\Http\Controllers\API\Companies\Tags\CompanyTagMapController;
@@ -27,3 +29,9 @@ Route::resource('contacts', ContactController::class)->middleware('auth:api');
 Route::resource('companies', CompanyController::class)->middleware('auth:api');
 Route::resource('tags', TagController::class)->middleware('auth:api');
 Route::resource('companies/{company}/tags', CompanyTagMapController::class)->middleware('auth:api');
+
+Route::prefix('tags')->middleware('auth:api')->group(function () {
+    Route::post('{tag}/companies', [TagCompanyController::class, 'store']);
+});
+Route::resource('tags/{tag}/companies', TagCompanyController::class)->middleware('auth:api');
+Route::resource('tags/{tag}/contacts', TagContactController::class)->middleware('auth:api');

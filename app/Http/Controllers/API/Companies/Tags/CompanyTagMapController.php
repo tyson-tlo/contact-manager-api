@@ -12,15 +12,7 @@ class CompanyTagMapController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(function ($request, $next) {
-            $company = $request->route('company');
-
-            if ($company && $company->user_id === $request->user()->id) {
-                return $next($request);
-            }
-
-            return response("Not Found", 404);
-        })->only('store', 'update', 'show', 'delete');
+        $this->middleware('companyBelongsToAuthenticatedUser')->only('store', 'update', 'show', 'delete');
     }
 
     /**
